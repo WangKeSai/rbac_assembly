@@ -1,0 +1,45 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+    <div class="luffy-container">
+        <div class="btn-group" style="margin: 5px 0">
+            {% if request|has_permission:"rbac:role_add" %}
+                <a class="btn btn-default" href="{% url 'rbac:role_add' %}">
+                    <i class="fa fa-plus-square" aria-hidden="true"></i> 添加角色
+                </a>
+            {% endif %}
+        </div>
+        <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>角色名称</th>
+                {% if request|has_permission:"rbac:role_edit" or request|has_permission:"rbac:role_del" %}
+                    <th>选项</th>
+                {% endif %}
+            </tr>
+            </thead>
+            <tbody>
+            {% for row in roles %}
+                <tr>
+                    <td>{{ row.id }}</td>
+                    <td>{{ row.title }}</td>
+                    {% if request|has_permission:"rbac:role_edit" or request|has_permission:"rbac:role_del" %}
+                        <td>
+                            {% if request|has_permission:"rbac:role_edit" %}
+                                <a href="{% url 'rbac:role_edit' rid=row.id %}">编辑</a>
+                            {% endif %}
+                            {% if request|has_permission:"rbac:role_del" %}
+                                <a href="{% url 'rbac:role_del' rid=row.id %}">删除</a>
+                            {% endif %}
+                        </td>
+                    {% endif %}
+
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}

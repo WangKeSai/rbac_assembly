@@ -1,0 +1,53 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+    <div class="luffy-container">
+        <div class="btn-group" style="margin: 5px 0">
+            {% if request|has_permission:"rbac:user_add" %}
+                <a class="btn btn-default" href="{% url 'rbac:user_add' %}">
+                        <i class="fa fa-plus-square" aria-hidden="true"></i> 添加用户
+                </a>
+            {% endif %}
+        </div>
+        <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>序号</th>
+                <th>姓名</th>
+                <th>email</th>
+                {% if request|has_permission:"rbac:user_reset_password" %}
+                    <th>重置密码</th>
+                {% endif %}
+                {% if request|has_permission:"rbac:user_edit" or request|has_permission:"rbac:user_del" %}
+                    <th>选项</th>
+                {% endif %}
+            </tr>
+            </thead>
+            <tbody>
+            {% for row in users %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ row.name }}</td>
+                    <td>{{ row.email }}</td>
+                    {% if request|has_permission:"rbac:user_reset_password" %}
+                        <td><a href="{% url 'rbac:user_reset_password' rid=row.id %}">重置密码</a></td>
+                    {% endif %}
+                    {% if request|has_permission:"rbac:user_edit" or request|has_permission:"rbac:user_del" %}
+                        <td>
+                            {% if request|has_permission:"rbac:user_edit" %}
+                                <a href="{% url 'rbac:user_edit' rid=row.id %}">编辑</a>
+                            {% endif %}
+                            {% if request|has_permission:"rbac:user_del" %}
+                                <a href="{% url 'rbac:user_del' rid=row.id %}">删除</a>
+                            {% endif %}
+                        </td>
+                    {% endif %}
+
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}
